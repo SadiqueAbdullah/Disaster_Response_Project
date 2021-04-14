@@ -78,8 +78,9 @@ def save_data(df, database_filename):
        df (DataFrame): A dataframe containing messages and categories
        database_filename (str): The file name of the database
        """
-    conn = sqlite3.connect(database_filename)
-    df.to_sql("disaster_message_table", conn, if_exists="replace")
+    
+    engine = create_engine('sqlite:///{}'.format(database_filename))
+    df.to_sql('disaster_messages_table', engine, index=False)
 
 
 def main():

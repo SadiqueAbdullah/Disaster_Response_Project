@@ -26,10 +26,10 @@ def tokenize(text):
     return clean_tokens
 
 # load data
-conn = sqlite3.connect('../data/DisasterResponse.db')
-#engine = create_engine('sqlite:///../data/YourDatabaseName.db')
-#df = pd.read_sql_table('YourTableName', engine)
-df = pd.read_sql_query('SELECT * FROM disaster_message_table', conn)
+
+engine = create_engine('sqlite:///../data/DisasterResponse.db')
+df = pd.read_sql_table('disaster_messages_table', engine)
+
 
 # load model
 model = joblib.load("../models/classifier.pkl")

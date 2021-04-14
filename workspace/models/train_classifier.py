@@ -34,11 +34,12 @@ def load_data(database_filepath):
     X: Predictor Variable. Here it's the Text messages
     y: Target Variable. Here it's Category of messages out of 36 categories
     """
-    conn = sqlite3.connect(database_filepath)
-    df = pd.read_sql_query('SELECT * FROM disaster_message_table', conn)
+    
+    engine = create_engine('sqlite:///{}'.format(database_filepath))
+    df = pd.read_sql_table('disaster_messages_table', engine)
     X = df.message.values
     y = df.iloc[:, 4:]
-    y = y.astype(str)
+    y = y.astype(int)
     
     return X, y
 
