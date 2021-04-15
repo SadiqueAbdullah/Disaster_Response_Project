@@ -42,28 +42,97 @@ def index():
     
     # extract data needed for visuals
     # TODO: Below is an example - modify to extract data for your own visuals
-    genre_counts = df.groupby('genre').count()['message']
-    genre_names = list(genre_counts.index)
+    
     
     # create visuals
     # TODO: Below is an example - modify to create your own visuals
-    graphs = [
-        {
-            'data': [
-                Bar(
-                    x=genre_names,
-                    y=genre_counts
-                )
-            ],
+    rel_count = df.groupby('related').count()['message']
+    rel_per = round(100*rel_count/rel_count.sum(), 2)
+    rel = list(rel_count.index)
+    cat_num = df.drop(['id', 'message', 'original', 'genre'], axis = 1).sum()
+    cat_num = cat_num.sort_values(ascending = False)
+    cat = list(cat_num.index)
+    direct_count = df.groupby('direct_report').count()['message']
+    direct = list(direct_count.index)
 
-            'layout': {
-                'title': 'Distribution of Message Genres',
-                'yaxis': {
-                    'title': "Count"
-                },
-                'xaxis': {
-                    'title': "Genre"
+        
+    # create visuals
+    
+    graphs = [
+        # First graph as visaul to Dashboard    
+        {
+            "data": [
+              {
+                "type": "bar",
+                "x": cat,
+                "y": cat_num,
+                "marker": {
+                  "color": 'blue'}
                 }
+            ],
+            "layout": {
+              "title": "Count of Messages by Category",
+              'yaxis': {
+                  'title': "Count"
+              },
+              'xaxis': {
+                  'title': "Categories"
+              },
+              'barmode': 'group'
+            }
+        },
+        
+        # Second Graph for Dashboard
+        
+        {
+            "data": [
+              {
+                "type": "bar",
+                "x": direct,
+                "y": direct_count,
+                "marker": {
+                  "color": 'orange'}
+                }
+            ],
+            "layout": {
+              "title": "Count of Messages received directly or indirectly",
+              'yaxis': {
+                  'title': "Count"
+              },
+              'xaxis': {
+                  'title': "direct reports (Yes/No)"
+              },
+              'barmode': 'group'
+            }
+        },
+        # Third graph for Dashboard
+        {
+            "data": [
+              {
+                "type": "pie",
+                "uid": "f4de1f",
+                "hole": 0.8,
+                "name": "Related",
+                "pull": 0,
+                "domain": {
+                  "x": rel_per,
+                  "y": rel
+                },
+                "marker": {
+                  "colors": [
+                    "#1f77b4",
+                    "#ff7f0e",
+                    "#2ca02c"
+                   ]
+                },
+                "textinfo": "label+value",
+                "hoverinfo": "all",
+                "labels": rel,
+                "values": rel_per
+              }
+            ],
+            "layout": {
+              "title": "Percentage of Messages by Related categories"
             }
         }
     ]
